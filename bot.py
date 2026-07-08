@@ -236,19 +236,22 @@ async def handle_quiz_answer(callback: types.CallbackQuery):
     await callback.answer()
 
 import os
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 from aiohttp import web
 
-async def on_startup(bot: Bot) -> None:
-    # Запускает фоновое чтение сообщений Telegram параллельно с веб-сервером
-    asyncio.create_task(dp.start_polling(bot))
+async def run_polling():
+    # Чистый запуск бота в фоновом режиме
+    await dp.start_polling(bot)
+
+async def on_startup(app):
+    # Привязываем запуск бота к старту сервера без путаницы в аргументах
+    asyncio.create_task(run_polling())
 
 def main():
     app = web.Application()
-    # Создаем пустую веб-страницу, чтобы Render успокоился
+    # Страница-заглушка для прохождения проверки портов Render
     app.router.add_get("/", lambda r: web.Response(text="Bot is running!"))
     app.on_startup.append(on_startup)
-
+    
     port = int(os.environ.get("PORT", 10000))
     web.run_app(app, host="0.0.0.0", port=port)
 
