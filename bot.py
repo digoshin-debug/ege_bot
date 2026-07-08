@@ -5,7 +5,7 @@ from aiogram.filters import CommandStart
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 # Твой рабочий токен
-API_TOKEN = '8483502683:AAFreP00106No_Bwy71QScr70yhJdrM2f-o'
+API_TOKEN = '8483502683:AAFrePOO106No_8wy71QsCr7OyhJdrM2f-o'
 
 logging.basicConfig(level=logging.INFO)
 
