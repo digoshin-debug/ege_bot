@@ -7,10 +7,10 @@ from aiogram.filters import CommandStart
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiohttp import web
 
-# Безопасное чтение токена из настроек Render (в коде токена больше нет!)
+# Безопасное чтение токена из настроек Render
 API_TOKEN = os.getenv('BOT_TOKEN')
-# Укажи числовой ID аккаунта Никиты (или менеджера), куда бот будет сливать базу лидов
-ADMIN_CHAT_ID = 560946112  # Замени это число на свой реальный ID из @userinfobot
+# ID твоего аккаунта для получения лидов
+ADMIN_CHAT_ID = 346392158
 
 logging.basicConfig(level=logging.INFO)
 
@@ -92,7 +92,7 @@ QUESTIONS = [
     },
     {
         "text": "⚡️ Вопрос 13 из 18 (Задание 21 в ЕГЭ)\n\nМожно ли объединить эти два предложения в один ответ по правилу «Тире между подлежащим и сказуемым»: 1) «Москва — столица» и 2) «Сыр выпал — с ним была плутовка такова»?",
-        "answers": ["Да, нужна", "Нет, не нужна"],
+        "answers": ["Да", "Нет"],
         "correct_index": 1,
         "explain": "❌ *Вопрос 13 (Задание 21):* Нельзя. Первое — тире между подлежащим и сказуемым, второе — тире в БСП."
     },
@@ -205,7 +205,7 @@ async def handle_quiz_answer(callback: types.CallbackQuery):
         else:
             range_str = "65–75"
 
-        # 3. Сбор логов для базы лидов (Отправка Никите)
+        # Сбор логов для базы лидов (Отправка Никите)
         username = callback.from_user.username
         first_name = callback.from_user.first_name
         user_link = f"@{username}" if username else f"[{first_name}](tg://user?id={user_id})"
@@ -267,7 +267,7 @@ async def handle_quiz_answer(callback: types.CallbackQuery):
             f"\n\n🎯 *Чтобы точнее оценить текущий уровень, разобрать ошибки и понять, как двигаться к 85+ баллам, "
             f"запишись на индивидуальную диагностику с преподавателем.*\n\n"
             f"Если после диагностики тебе подойдет план подготовки и формат работы, мы сможем сразу перейти к "
-            f"регулярным занятиям — с понятной целью, маршрутом и контролям прогресса.\n\n"
+            f"регулярным занятиям — с понятной целью, маршрутом и контролем прогресса.\n\n"
             f"*Как Step by Step помогает выйти на нужный балл:*\n"
             f"→ подбираем преподавателя под цель, уровень и темп ученика\n"
             f"→ выстраиваем индивидуальный учебный план подготовки\n"
@@ -280,7 +280,7 @@ async def handle_quiz_answer(callback: types.CallbackQuery):
         
         final_text = result_text + advantages
         
-        # 1. Формирование динамического предзаполненного текста для Никиты
+        # Шаблон предзаполненного текста
         template_msg = (
             f"👋 Привет! Я прошёл экспресс-диагностику ЕГЭ по русскому языку в Step by Step.\n\n"
             f"Мой результат: {score} из {total} правильных ответов. Ориентировочный диапазон — {range_str} баллов.\n"
@@ -289,9 +289,7 @@ async def handle_quiz_answer(callback: types.CallbackQuery):
             f"Удобное время для диагностики: [указать]"
         )
         
-        # Кодируем текст в формат ссылки
         encoded_text = urllib.parse.quote(template_msg)
-        # Ссылка ведет в чат к Никите (@azaretov) с готовым текстом
         nikita_url = f"https://t.me/azaretov?text={encoded_text}"
         
         offer_keyboard = InlineKeyboardBuilder()
